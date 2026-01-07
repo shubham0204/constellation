@@ -49,8 +49,8 @@ kotlin {
                 "iosSimulatorArm64" -> "ios-arm64-simulator"
                 else -> "ios-arm64"
               }
-          val headerPath = project.file("src/commonMain/resources/ios/include")
-          val libraryPath = project.file("src/commonMain/resources/ios/libs/$archPath")
+          val headerPath = project.file("src/iosMain/resources/include")
+          val libraryPath = project.file("src/iosMain/resources/libs/$archPath")
           includeDirs(headerPath)
           compilerOpts("-framework", "Foundation")
           compilerOpts("-L${libraryPath.absolutePath}", "-lcactus")

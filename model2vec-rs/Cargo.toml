@@ -9,7 +9,11 @@ safetensors = "0.5.2"
 memmap2 = "0.9.5"
 anyhow = "1.0.95"
 rayon = "1.10.0"
+jni = { version = "0.21.1" , optional = true }
 
 [lib]
 name = "model2vec"
-crate-type = ["staticlib"]
+crate-type = ["staticlib", "cdylib"]
+
+[features]
+android = [ "dep:jni" ]
