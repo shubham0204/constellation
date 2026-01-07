@@ -9,7 +9,7 @@ import platform.Foundation.NSUserDomainMask
 
 actual val dbBuilder: RoomDatabase.Builder<AppDatabase> by lazy {
     val dbFilePath = documentDirectory() + "/my_room.db"
-    Room.databaseBuilder<AppDatabase>(name = dbFilePath)
+    Room.databaseBuilder<AppDatabase>(name = dbFilePath).addTypeConverter(ThoughtTypeConverter())
 }
 
 @OptIn(ExperimentalForeignApi::class)

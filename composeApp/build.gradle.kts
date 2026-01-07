@@ -7,6 +7,7 @@ plugins {
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.ksp)
     alias(libs.plugins.androidx.room)
+    kotlin("plugin.serialization") version "2.3.0"
 }
 
 kotlin {
@@ -63,6 +64,9 @@ kotlin {
             implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.7.1")
             implementation(libs.androidx.room.runtime)
             implementation(libs.androidx.sqlite.bundled)
+
+            implementation("br.com.devsrsouza.compose.icons:feather:1.1.1")
+            implementation("org.jetbrains.androidx.navigation:navigation-compose:2.9.1")
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
