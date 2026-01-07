@@ -111,7 +111,7 @@ mod jni_bindings {
     use crate::static_model::StaticModel;
 
     #[no_mangle]
-    pub extern "C" fn Java_io_shubham0204_model2vec_library_Model2Vec_create(
+    pub extern "C" fn Java_io_shubham0204_model2vec_Model2Vec_create(
         mut env: JNIEnv,
         _class: JClass,
         embeddings_path: JString,
@@ -133,7 +133,7 @@ mod jni_bindings {
     }
 
     #[no_mangle]
-    pub extern "C" fn Java_io_shubham0204_model2vec_library_Model2Vec_addSeqBuffer(
+    pub extern "C" fn Java_io_shubham0204_model2vec_Model2Vec_addSeqBuffer(
         mut env: JNIEnv,
         _class: JClass,
         model: jlong,
@@ -150,7 +150,7 @@ mod jni_bindings {
     }
 
     #[no_mangle]
-    pub extern "C" fn Java_io_shubham0204_model2vec_library_Model2Vec_clearSeqBuffer(
+    pub extern "C" fn Java_io_shubham0204_model2vec_Model2Vec_clearSeqBuffer(
         _: JNIEnv,
         _class: JClass,
         model: jlong,
@@ -162,7 +162,7 @@ mod jni_bindings {
     }
 
     #[no_mangle]
-    pub extern "C" fn Java_io_shubham0204_model2vec_library_Model2Vec_encode(
+    pub extern "C" fn Java_io_shubham0204_model2vec_Model2Vec_encode(
         mut env: JNIEnv,
         _class: JClass,
         model: jlong,
@@ -197,7 +197,7 @@ mod jni_bindings {
     }
 
     #[no_mangle]
-    pub extern "C" fn Java_io_shubham0204_model2vec_library_Model2Vec_release(
+    pub extern "C" fn Java_io_shubham0204_model2vec_Model2Vec_release(
         _: JNIEnv,
         _class: JClass,
         model: jlong,

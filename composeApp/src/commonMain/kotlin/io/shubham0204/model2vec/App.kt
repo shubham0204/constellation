@@ -17,7 +17,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import io.shubham0204.model2vec.library.Model2Vec
 import model2vec.composeapp.generated.resources.Res
 import model2vec.composeapp.generated.resources.compose_multiplatform
 import org.jetbrains.compose.resources.painterResource
@@ -40,9 +39,13 @@ fun App() {
                 onClick = {
                     showContent = !showContent
                     // https://kotlinlang.org/docs/multiplatform/compose-multiplatform-resources-usage.html#accessing-multiplatform-resources-from-external-libraries
-                    val modelFile = Res.getUri("files/model.safetensors").replace("file://", "")
-                    val tokenizerFile = Res.getUri("files/tokenizer.json").replace("file://", "")
-                    val model2vec = Model2Vec(modelFile, tokenizerFile, 4)
+                    val modelFile = FileUtils.getReadableFileFromResFileUri(Res.getUri("files/model.safetensors"))
+                    val tokenizerFile = FileUtils.getReadableFileFromResFileUri(Res.getUri("files/tokenizer.json"))
+
+                    println("tokenizerFile: $tokenizerFile")
+                    println("embeddingsFile: $modelFile")
+
+                    val model2vec = Model2Vec(modelFile, tokenizerFile, numThreads = 1)
                     val sentences = listOf("Hello, world!", "Compose Multiplatform is awesome!")
                     val embeddings = model2vec.encode(sentences)
                     model2vec.close()

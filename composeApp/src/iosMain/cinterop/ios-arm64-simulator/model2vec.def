@@ -1,0 +1,4 @@
+headers = model2vec.h
+staticLibraries = libmodel2vec.a
+libraryPaths = src/iosMain/resources/libs/ios-arm64-simulator
+compilerOpts = -framework Foundation

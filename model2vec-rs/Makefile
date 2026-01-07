@@ -11,5 +11,5 @@ build-android:
 	@cargo build --release --target aarch64-linux-android --features=android
 	@cargo build --release --target x86_64-linux-android --features=android
 
-	@cp target/aarch64-linux-android/release/libmodel2vec.so ../library/src/commonMain/resources/android/libs/arm64-v8a/libmodel2vec.so
-	@cp target/x86_64-linux-android/release/libmodel2vec.so ../library/src/commonMain/resources/android/libs/x86-64/libmodel2vec.so
+	@cp target/aarch64-linux-android/release/libmodel2vec.so ../composeApp/src/androidMain/jniLibs/arm64-v8a/libmodel2vec.so
+	@cp target/x86_64-linux-android/release/libmodel2vec.so ../composeApp/src/androidMain/jniLibs/x86_64/libmodel2vec.so
