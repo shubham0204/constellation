@@ -14,14 +14,15 @@ import kotlinx.coroutines.IO
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.Serializable
-import org.jetbrains.compose.ui.tooling.preview.Preview
+import model2vec.composeapp.generated.resources.Res
 
-@Serializable object ThoughtsScreenDestination
+@Serializable
+object ThoughtsScreenDestination
 
-@Serializable data class AddEditThoughtScreenDestination(val thoughtId: Long? = null)
+@Serializable
+data class AddEditThoughtScreenDestination(val thoughtId: Long? = null)
 
 @Composable
-@Preview
 fun App() {
     val navController = rememberNavController()
     val thoughtsDao = getRoomDatabase().getThoughtDao()
@@ -49,82 +50,18 @@ fun App() {
                 onUpdate = { newOrUpdatedThought ->
                     navController.popBackStack()
                     CoroutineScope(Dispatchers.IO).launch {
-                        thoughtsDao.upsert(newOrUpdatedThought)
+                        // https://kotlinlang.org/docs/multiplatform/compose-multiplatform-resources-usage.html#accessing-multiplatform-resources-from-external-libraries
+                        val modelFile = FileUtils.getReadableFileFromResFileUri(
+                            Res.getUri("files/embeddings.safetensors")
+                        )
+                        val tokenizerFile = FileUtils.getReadableFileFromResFileUri(Res.getUri("files/tokenizer.json"))
+                        val model2vec = Model2Vec(modelFile, tokenizerFile, numThreads = 1)
+                        val embedding = model2vec.encode(listOf(newOrUpdatedThought.content))[0]
+                        model2vec.close()
+                        thoughtsDao.upsert(newOrUpdatedThought.copy(embedding = embedding))
                     }
                 },
             )
         }
     }
-
-    //    MaterialTheme {
-    //        var showContent by remember { mutableStateOf(false) }
-    //        var results by remember { mutableStateOf("") }
-    //        val dao = getRoomDatabase().getThoughtDao()
-    //        val thoughts by dao.getAllAsFlow().collectAsState(initial = emptyList())
-    //        Column(
-    //            modifier =
-    //                Modifier.background(MaterialTheme.colorScheme.primaryContainer)
-    //                    .safeContentPadding()
-    //                    .fillMaxSize(),
-    //            horizontalAlignment = Alignment.CenterHorizontally,
-    //        ) {
-    //            Button(
-    //                onClick = {
-    //                    showContent = !showContent
-    //                    //
-    // https://kotlinlang.org/docs/multiplatform/compose-multiplatform-resources-usage.html#accessing-multiplatform-resources-from-external-libraries
-    //                    val modelFile =
-    //                        FileUtils.getReadableFileFromResFileUri(
-    //                            Res.getUri("files/embeddings.safetensors")
-    //                        )
-    //                    val tokenizerFile =
-    //
-    // FileUtils.getReadableFileFromResFileUri(Res.getUri("files/tokenizer.json"))
-    //
-    //                    println("tokenizerFile: $tokenizerFile")
-    //                    println("embeddingsFile: $modelFile")
-    //
-    //                    val model2vec = Model2Vec(modelFile, tokenizerFile, numThreads = 1)
-    //                    val sentences = listOf("Hello, world!", "Compose Multiplatform is
-    // awesome!")
-    //                    val embeddings = model2vec.encode(sentences)
-    //                    model2vec.close()
-    //                    results =
-    //                        embeddings.joinToString(separator = "\n") {
-    //                            it.joinToString(prefix = "[", postfix = "]")
-    //                        }
-    //                }
-    //            ) {
-    //                Text("Click me!")
-    //            }
-    //            Button(
-    //                onClick = {
-    //                    CoroutineScope(Dispatchers.IO).launch {
-    //                        dao.insert(
-    //                            Thought(
-    //                                title = "Hello, world!",
-    //                                content = "This is a thought.",
-    //                                dateModifiedTimestamp =
-    // Clock.System.now().toEpochMilliseconds(),
-    //                            )
-    //                        )
-    //                    }
-    //                }
-    //            ) {
-    //                Text("Add Thought")
-    //            }
-    //            if (results.isNotEmpty()) {
-    //                Text("Results: $results")
-    //            }
-    //            LazyColumn {
-    //                items(thoughts) {
-    //                    Column {
-    //                        Text(it.title)
-    //                        Text(it.content)
-    //                        Text(it.getDateModified())
-    //                    }
-    //                }
-    //            }
-    //        }
-    //    }
 }

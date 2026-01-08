@@ -19,7 +19,9 @@ import androidx.compose.ui.Modifier
 import compose.icons.FeatherIcons
 import compose.icons.feathericons.ArrowLeft
 import compose.icons.feathericons.Check
+import dummyThoughts
 import io.shubham0204.model2vec.data.Thought
+import org.jetbrains.compose.ui.tooling.preview.Preview
 import kotlin.time.Clock
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -69,4 +71,10 @@ fun AddEditThoughtsScreen(
             }
         }
     }
+}
+
+@Preview
+@Composable
+private fun PreviewAddEditThoughtScreen() {
+    AddEditThoughtsScreen(thought = dummyThoughts[0], onBackClick = {}, onUpdate = {})
 }

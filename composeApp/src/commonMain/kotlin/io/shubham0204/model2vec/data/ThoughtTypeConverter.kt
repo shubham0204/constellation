@@ -24,9 +24,9 @@ class ThoughtTypeConverter {
         for (i in floatArray.indices) {
             val bits =
                 ((value[i * 4].toInt() and 0xFF) shl 24) or
-                    ((value[i * 4 + 1].toInt() and 0xFF) shl 16) or
-                    ((value[i * 4 + 2].toInt() and 0xFF) shl 8) or
-                    (value[i * 4 + 3].toInt() and 0xFF)
+                        ((value[i * 4 + 1].toInt() and 0xFF) shl 16) or
+                        ((value[i * 4 + 2].toInt() and 0xFF) shl 8) or
+                        (value[i * 4 + 3].toInt() and 0xFF)
             floatArray[i] = Float.fromBits(bits)
         }
         return floatArray
