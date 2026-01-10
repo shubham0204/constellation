@@ -8,6 +8,7 @@ import io.shubham0204.model2vec.data.Thought
 import io.shubham0204.model2vec.services.SimilarThoughtsService
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 data class AddEditThoughtsScreenUiState(
@@ -16,6 +17,7 @@ data class AddEditThoughtsScreenUiState(
 )
 
 sealed interface AddEditThoughtsScreenEvent {
+    data class LoadThought(val thoughtId: Long) : AddEditThoughtsScreenEvent
 
     data class UpsertThought(val thought: Thought) : AddEditThoughtsScreenEvent
 
@@ -48,12 +50,23 @@ class AddEditThoughtsScreenViewModel(
                     val similarThoughts = similarThoughtsService.getSimilarThoughts(
                         event.content,
                         db.getThoughtDao().getAll().map { Pair(it.id, it.embedding) })
-                    _uiState.value = _uiState.value.copy(
-                        similarThoughts = similarThoughts.mapNotNull { id ->
-                            db.getThoughtDao().getById(id)
-                        })
+                    _uiState.update {
+                        it.copy(
+                            similarThoughts = similarThoughts.map { id ->
+                                db.getThoughtDao().getById(id)
+                            }
+                        )
+                    }
                 }
+            }
 
+            is AddEditThoughtsScreenEvent.LoadThought -> {
+                viewModelScope.launch {
+                    val thought = db.getThoughtDao().getById(event.thoughtId)
+                    _uiState.update {
+                        it.copy(thought = thought)
+                    }
+                }
             }
         }
     }

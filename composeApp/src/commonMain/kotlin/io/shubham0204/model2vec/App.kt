@@ -1,6 +1,7 @@
 package io.shubham0204.model2vec
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -10,6 +11,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import io.shubham0204.model2vec.di.createKoinConfiguration
 import io.shubham0204.model2vec.screens.add_edit_thoughts.AddEditThoughtsScreen
+import io.shubham0204.model2vec.screens.add_edit_thoughts.AddEditThoughtsScreenEvent
 import io.shubham0204.model2vec.screens.add_edit_thoughts.AddEditThoughtsScreenViewModel
 import io.shubham0204.model2vec.screens.thoughts.ThoughtsScreen
 import io.shubham0204.model2vec.screens.thoughts.ThoughtsScreenViewModel
@@ -47,6 +49,11 @@ fun App() {
             composable<AddEditThoughtScreenDestination> { backStackEntry ->
                 val route = backStackEntry.toRoute<AddEditThoughtScreenDestination>()
                 val viewModel = koinViewModel<AddEditThoughtsScreenViewModel>()
+                LaunchedEffect(route.thoughtId) {
+                    route.thoughtId?.let {
+                        viewModel.onEvent(AddEditThoughtsScreenEvent.LoadThought(it))
+                    }
+                }
                 val uiState by viewModel.uiState.collectAsStateWithLifecycle(LocalLifecycleOwner.current)
                 AddEditThoughtsScreen(
                     uiState,
