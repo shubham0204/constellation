@@ -1,3 +1,73 @@
+# Constellation - Journal and Revisit Your Thoughts
+
+Constellation is an app that lets you journal your thoughts and revisit older entries that you find similar.
+
+## Setup
+
+### Building the Native Library
+
+#### Building the Native Library for the KMP app
+
+To compile the native library, you need to have the Rust toolchain installed on your system.
+
+Add Android-specific compilation targets to the Rust toolchain:
+
+```bash
+rustup target add aarch64-linux-android armv7-linux-androideabi i686-linux-android x86_64-linux-android
+```
+
+The library has a dependency (a crate/package in Rust) `onig` which needs a C++ compiler for the target. For Android
+targets, the C++ compilers are provided by the Android NDK. Install Android NDK and copy the path to its directory.
+
+Create `config.toml` in the `model2vec-rs/.cargo` directory and add the following, replacing `<android-ndk-dir>` with
+the copied path of the Android NDK directory.
+
+```toml
+
+[target.aarch64-linux-android]
+linker = "<android-ndk-dir>/toolchains/llvm/prebuilt/darwin-x86_64/bin/aarch64-linux-android33-clang"
+
+[target.armv7-linux-androideabi]
+linker = "<android-ndk-dir>/toolchains/llvm/prebuilt/darwin-x86_64/bin/armv7a-linux-androideabi33-clang"
+
+[target.i686-linux-android]
+linker = "<android-ndk-dir>/toolchains/llvm/prebuilt/darwin-x86_64/bin/i686-linux-android33-clang"
+
+[target.x86_64-linux-android]
+linker = "<android-ndk-dir>/toolchains/llvm/prebuilt/darwin-x86_64/bin/x86_64-linux-android33-clang"
+
+[env]
+AR_aarch64-linux-android="<android-ndk-dir>/toolchains/llvm/prebuilt/darwin-x86_64/bin/llvm-ar"
+CC_aarch64-linux-android="<android-ndk-dir>/toolchains/llvm/prebuilt/darwin-x86_64/bin/aarch64-linux-android33-clang"
+CXX_aarch64-linux-android="<android-ndk-dir>/toolchains/llvm/prebuilt/darwin-x86_64/bin/aarch64-linux-android33-clang++"
+
+AR_armv7-linux-androideabi="<android-ndk-dir>/toolchains/llvm/prebuilt/darwin-x86_64/bin/llvm-ar"
+CC_armv7-linux-androideabi="<android-ndk-dir>/toolchains/llvm/prebuilt/darwin-x86_64/bin/armv7a-linux-androideabi33-clang"
+CXX_armv7-linux-androideabi="<android-ndk-dir>/toolchains/llvm/prebuilt/darwin-x86_64/bin/armv7a-linux-androideabi33-clang++"
+
+AR_i686-linux-android="<android-ndk-dir>/toolchains/llvm/prebuilt/darwin-x86_64/bin/llvm-ar"
+CC_i686-linux-android="<android-ndk-dir>/toolchains/llvm/prebuilt/darwin-x86_64/bin/i686-linux-android33-clang"
+CXX_i686-linux-android="<android-ndk-dir>/toolchains/llvm/prebuilt/darwin-x86_64/bin/i686-linux-android33-clang++"
+
+AR_x86_64-linux-android="<android-ndk-dir>/toolchains/llvm/prebuilt/darwin-x86_64/bin/llvm-ar"
+CC_x86_64-linux-android="<android-ndk-dir>/toolchains/llvm/prebuilt/darwin-x86_64/bin/x86_64-linux-android33-clang"
+CXX_x86_64-linux-android="<android-ndk-dir>/toolchains/llvm/prebuilt/darwin-x86_64/bin/x86_64-linux-android33-clang++"
+```
+
+Next, execute the following to compile and copy the native library files to the respective KMP target directories.
+
+```bash
+cd model2vec-rs
+make build-android # build libs for Android
+make build-ios     # build libs for iOS
+```
+
+#### Running Unit Tests
+
+```bash
+cargo test
+```
+
 This is a Kotlin Multiplatform project targeting Android, iOS.
 
 * [/composeApp](./composeApp/src) is for code that will be shared across your Compose Multiplatform applications.
@@ -33,4 +103,4 @@ in your IDE’s toolbar or open the [/iosApp](./iosApp) directory in Xcode and r
 
 ---
 
-Learn more about [Kotlin Multiplatform](https://www.jetbrains.com/help/kotlin-multiplatform-dev/get-started.html)…
+Learn more about [Kotlin Multiplatform](https://www.jetbrains.com/help/kotlin-multiplatform-dev/get-started.html)

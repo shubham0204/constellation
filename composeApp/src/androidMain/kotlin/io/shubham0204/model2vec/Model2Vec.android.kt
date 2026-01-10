@@ -1,6 +1,10 @@
 package io.shubham0204.model2vec
 
-actual class Model2Vec {
+import model2vec.composeapp.generated.resources.Res
+
+actual class Model2Vec(
+    private val fileUtils: FileUtils
+) {
     init {
         System.loadLibrary("model2vec")
     }
@@ -8,9 +12,12 @@ actual class Model2Vec {
     private var handle: Long = 0L
     private var numThreads: Int = 1
 
-    actual constructor(modelPath: String, tokenizerPath: String, numThreads: Int) {
-        this.handle = create(modelPath, tokenizerPath, numThreads)
-        this.numThreads = numThreads
+    init {
+        val modelFile = fileUtils.getReadableFileFromResFileUri(
+            Res.getUri("files/embeddings.safetensors")
+        )
+        val tokenizerFile = fileUtils.getReadableFileFromResFileUri(Res.getUri("files/tokenizer.json"))
+        this.handle = create(modelFile, tokenizerFile, numThreads)
     }
 
     actual fun encode(sentences: List<String>): List<FloatArray> {

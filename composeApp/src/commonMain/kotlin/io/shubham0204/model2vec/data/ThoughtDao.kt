@@ -27,4 +27,7 @@ interface ThoughtDao {
 
     @Query("SELECT * FROM thoughts")
     fun getAllAsFlow(): Flow<List<Thought>>
+
+    @Query("SELECT * FROM thoughts")
+    suspend fun getAll(): List<Thought>
 }

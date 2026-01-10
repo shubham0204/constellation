@@ -14,20 +14,17 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import compose.icons.FeatherIcons
 import compose.icons.feathericons.Plus
 import dummyThoughts
 import io.shubham0204.model2vec.data.Thought
-import io.shubham0204.model2vec.data.ThoughtDao
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ThoughtsScreen(thoughtDao: ThoughtDao, onAddThoughtClick: () -> Unit, onThoughtClick: (Long) -> Unit) {
+fun ThoughtsScreen(uiState: ThoughtsScreenUiState, onAddThoughtClick: () -> Unit, onThoughtClick: (Long) -> Unit) {
     MaterialTheme {
         Scaffold(
             topBar = {
@@ -44,8 +41,7 @@ fun ThoughtsScreen(thoughtDao: ThoughtDao, onAddThoughtClick: () -> Unit, onThou
             floatingActionButtonPosition = FabPosition.End
         ) { paddingValues ->
             Column(modifier = Modifier.padding(paddingValues)) {
-                val thoughts by thoughtDao.getAllAsFlow().collectAsState(initial = emptyList())
-                ThoughtsList(thoughts = thoughts, onThoughtClick)
+                ThoughtsList(thoughts = uiState.thoughts, onThoughtClick)
             }
         }
     }

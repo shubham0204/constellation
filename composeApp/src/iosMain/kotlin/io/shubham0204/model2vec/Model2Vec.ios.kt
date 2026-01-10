@@ -12,10 +12,26 @@ import kotlinx.cinterop.get
 import kotlinx.cinterop.memScoped
 import kotlinx.cinterop.toCPointer
 import kotlinx.cinterop.useContents
+import model2vec.composeapp.generated.resources.Res
 
-actual class Model2Vec {
+actual class Model2Vec(
+    private val fileUtils: FileUtils
+) {
 
     private var handle: Long = 0L
+    private val numThreads = 1L
+
+    init {
+        memScoped {
+            val modelFile = fileUtils.getReadableFileFromResFileUri(
+                Res.getUri("files/embeddings.safetensors")
+            )
+            val tokenizerFile = fileUtils.getReadableFileFromResFileUri(Res.getUri("files/tokenizer.json"))
+            handle =
+                model2vec_create(modelFile, tokenizerFile, numThreads.toULong())?.rawValue?.toLong()
+                    ?: 0L
+        }
+    }
 
     actual fun encode(sentences: List<String>): List<FloatArray> {
         sentences.forEach { sentence -> model2vec_add_seq_buffer(handle.toCPointer(), sentence) }
@@ -40,13 +56,5 @@ actual class Model2Vec {
     actual fun close() {
         model2vec_release(handle.toCPointer())
         handle = 0L
-    }
-
-    actual constructor(modelPath: String, tokenizerPath: String, numThreads: Int) {
-        memScoped {
-            handle =
-                model2vec_create(modelPath, tokenizerPath, numThreads.toULong())?.rawValue?.toLong()
-                    ?: 0L
-        }
     }
 }

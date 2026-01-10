@@ -51,6 +51,9 @@ kotlin {
         androidMain.dependencies {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
+
+            implementation(libs.koin.android)
+            implementation(libs.koin.androidx.compose)
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -66,7 +69,12 @@ kotlin {
             implementation(libs.androidx.sqlite.bundled)
 
             implementation("br.com.devsrsouza.compose.icons:feather:1.1.1")
-            implementation("org.jetbrains.androidx.navigation:navigation-compose:2.9.1")
+
+            api(libs.koin.core)
+            implementation(libs.koin.compose)
+            implementation(libs.lifecycle.viewmodel)
+            implementation(libs.navigation.compose)
+            implementation("io.insert-koin:koin-compose-viewmodel:4.1.0")
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

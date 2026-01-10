@@ -16,7 +16,7 @@ data class Thought(
     val title: String,
     val content: String,
     val dateModifiedTimestamp: Long,
-    val embedding: FloatArray
+    val embedding: FloatArray = floatArrayOf()
 ) {
 
     @OptIn(FormatStringsInDatetimeFormats::class)

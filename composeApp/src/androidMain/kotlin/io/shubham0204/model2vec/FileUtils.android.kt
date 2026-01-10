@@ -2,11 +2,10 @@ package io.shubham0204.model2vec
 
 import java.nio.file.Paths
 
-private val applicationContext by lazy {
-    AndroidContextInitializer.getContext()
-}
 
-actual object FileUtils {
+actual class FileUtils(
+    private val applicationContext: android.content.Context
+) {
     actual fun getReadableFileFromResFileUri(resFileUri: String): String {
         val dirPath = resFileUri.replace("file:///android_asset/", "")
         val assetsFileInputStream = applicationContext.assets.open(dirPath)

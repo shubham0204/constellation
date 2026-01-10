@@ -1,7 +1,10 @@
 package io.shubham0204.model2vec.screens.add_edit_thoughts
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -19,7 +22,6 @@ import androidx.compose.ui.Modifier
 import compose.icons.FeatherIcons
 import compose.icons.feathericons.ArrowLeft
 import compose.icons.feathericons.Check
-import dummyThoughts
 import io.shubham0204.model2vec.data.Thought
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import kotlin.time.Clock
@@ -27,30 +29,32 @@ import kotlin.time.Clock
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddEditThoughtsScreen(
-    thought: Thought?,
+    uiState: AddEditThoughtsScreenUiState,
     onBackClick: () -> Unit,
-    onUpdate: (Thought) -> Unit,
+    onEvent: (AddEditThoughtsScreenEvent) -> Unit,
 ) {
-    var title by remember { mutableStateOf(thought?.title ?: "") }
-    var content by remember { mutableStateOf(thought?.content ?: "") }
+    var title by remember { mutableStateOf(uiState.thought?.title ?: "") }
+    var content by remember { mutableStateOf(uiState.thought?.content ?: "") }
     MaterialTheme {
         Scaffold(
             topBar = {
                 TopAppBar(
-                    title = { Text(text = if (thought == null) "Add Thought" else "Edit Thought") },
+                    title = { Text(text = if (uiState.thought == null) "Add Thought" else "Edit Thought") },
                     actions = {
                         IconButton(
                             onClick = {
-                                onUpdate(
-                                    Thought(
-                                        id = thought?.id ?: 0L,
-                                        title = title,
-                                        content = content,
-                                        dateModifiedTimestamp =
-                                            Clock.System.now().epochSeconds,
-                                        embedding = floatArrayOf()
+                                onEvent(
+                                    AddEditThoughtsScreenEvent.UpsertThought(
+                                        Thought(
+                                            id = uiState.thought?.id ?: 0L,
+                                            title = title,
+                                            content = content,
+                                            dateModifiedTimestamp =
+                                                Clock.System.now().epochSeconds,
+                                        )
                                     )
                                 )
+                                onBackClick()
                             }
                         ) {
                             Icon(FeatherIcons.Check, contentDescription = "Update")
@@ -65,9 +69,24 @@ fun AddEditThoughtsScreen(
             }
         ) { paddingValues ->
             Column(modifier = Modifier.padding(paddingValues)) {
-                BasicTextField(value = title, onValueChange = { title = it })
-
-                BasicTextField(value = content, onValueChange = { content = it })
+                Column(modifier = Modifier.fillMaxHeight().weight(0.6f)) {
+                    BasicTextField(value = title, onValueChange = { title = it })
+                    BasicTextField(
+                        value = content,
+                        onValueChange = {
+                            content = it
+                            onEvent(AddEditThoughtsScreenEvent.LoadSimilarThoughts(it))
+                        }
+                    )
+                }
+                Column(modifier = Modifier.fillMaxHeight().weight(0.4f)) {
+                    Text("Similar Thoughts")
+                    LazyColumn {
+                        items(uiState.similarThoughts) { thought ->
+                            Text("${thought.title}: ${thought.content}")
+                        }
+                    }
+                }
             }
         }
     }
@@ -76,5 +95,5 @@ fun AddEditThoughtsScreen(
 @Preview
 @Composable
 private fun PreviewAddEditThoughtScreen() {
-    AddEditThoughtsScreen(thought = dummyThoughts[0], onBackClick = {}, onUpdate = {})
+    AddEditThoughtsScreen(uiState = AddEditThoughtsScreenUiState(), onBackClick = {}, onEvent = {})
 }
