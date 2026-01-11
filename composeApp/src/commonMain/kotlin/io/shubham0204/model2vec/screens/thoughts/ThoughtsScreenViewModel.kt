@@ -2,12 +2,19 @@ package io.shubham0204.model2vec.screens.thoughts
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import io.github.vinceglb.filekit.FileKit
+import io.github.vinceglb.filekit.dialogs.FileKitType
+import io.github.vinceglb.filekit.dialogs.openFilePicker
+import io.github.vinceglb.filekit.dialogs.openFileSaver
+import io.github.vinceglb.filekit.readString
+import io.github.vinceglb.filekit.writeString
 import io.shubham0204.model2vec.Model2Vec
 import io.shubham0204.model2vec.data.AppDatabase
 import io.shubham0204.model2vec.data.Thought
 import io.shubham0204.model2vec.preview.dummyThoughts
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.serialization.json.Json
 import kotlin.math.sqrt
 
 data class ThoughtsScreenUiState(
@@ -18,6 +25,10 @@ data class ThoughtsScreenUiState(
 
 sealed interface ThoughtsScreenUiEvent {
     data class OnSearchQueryChange(val query: String) : ThoughtsScreenUiEvent
+
+    data object ImportThoughts : ThoughtsScreenUiEvent
+
+    data object ExportThoughts : ThoughtsScreenUiEvent
 }
 
 class ThoughtsScreenViewModel(
@@ -60,6 +71,26 @@ class ThoughtsScreenViewModel(
                     performSearch(event.query)
                 }
             }
+
+            is ThoughtsScreenUiEvent.ImportThoughts -> {
+                viewModelScope.launch {
+                    val file = FileKit.openFilePicker(
+                        FileKitType.File(extension = "json")
+                    ) ?: return@launch
+                    val jsonString = file.readString()
+                    val importedThoughts = Json.decodeFromString<List<Thought>>(jsonString)
+                    db.getThoughtDao().insertAll(importedThoughts)
+                }
+            }
+
+            is ThoughtsScreenUiEvent.ExportThoughts -> {
+                viewModelScope.launch {
+                    val file = FileKit.openFileSaver(suggestedName = "thoughts", extension = "json") ?: return@launch
+                    val allThoughts = db.getThoughtDao().getAll()
+                    val jsonString = Json.encodeToString(allThoughts)
+                    file.writeString(jsonString)
+                }
+            }
         }
     }
 
@@ -76,11 +107,11 @@ class ThoughtsScreenViewModel(
             // Semantic search using embeddings
             val queryEmbedding = model2vec.encode(listOf(query)).firstOrNull()
             val semanticScores = if (queryEmbedding != null) {
-                allThoughts.mapNotNull { thought ->
-                    thought.embedding?.let { embedding ->
+                allThoughts.associate { thought ->
+                    thought.embedding.let { embedding ->
                         thought.id to cosineSimilarity(queryEmbedding, embedding)
                     }
-                }.toMap()
+                }
             } else {
                 emptyMap()
             }

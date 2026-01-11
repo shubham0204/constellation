@@ -35,6 +35,7 @@ import androidx.compose.ui.unit.dp
 import compose.icons.FeatherIcons
 import compose.icons.feathericons.ArrowLeft
 import compose.icons.feathericons.Check
+import compose.icons.feathericons.Delete
 import io.shubham0204.model2vec.data.Thought
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import kotlin.time.Clock
@@ -76,6 +77,20 @@ fun AddEditThoughtsScreen(
                             )
                         },
                         actions = {
+                            if (uiState.thought != null) {
+                                IconButton(
+                                    onClick = {
+                                        onEvent(AddEditThoughtsScreenEvent.DeleteThought(uiState.thought.id))
+                                        onBackClick()
+                                    }
+                                ) {
+                                    Icon(
+                                        FeatherIcons.Delete,
+                                        contentDescription = "Delete",
+                                        tint = Color(0xFF7C4DFF)
+                                    )
+                                }
+                            }
                             IconButton(
                                 onClick = {
                                     onEvent(

@@ -8,8 +8,10 @@ import kotlinx.datetime.format
 import kotlinx.datetime.format.FormatStringsInDatetimeFormats
 import kotlinx.datetime.format.byUnicodePattern
 import kotlinx.datetime.toLocalDateTime
+import kotlinx.serialization.Serializable
 import kotlin.time.Instant
 
+@Serializable
 @Entity(tableName = "thoughts")
 data class Thought(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,

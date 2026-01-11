@@ -22,6 +22,8 @@ sealed interface AddEditThoughtsScreenEvent {
     data class UpsertThought(val thought: Thought) : AddEditThoughtsScreenEvent
 
     data class LoadSimilarThoughts(val content: String) : AddEditThoughtsScreenEvent
+
+    data class DeleteThought(val thoughtId: Long) : AddEditThoughtsScreenEvent
 }
 
 class AddEditThoughtsScreenViewModel(
@@ -66,6 +68,12 @@ class AddEditThoughtsScreenViewModel(
                     _uiState.update {
                         it.copy(thought = thought)
                     }
+                }
+            }
+
+            is AddEditThoughtsScreenEvent.DeleteThought -> {
+                viewModelScope.launch {
+                    db.getThoughtDao().deleteById(event.thoughtId)
                 }
             }
         }

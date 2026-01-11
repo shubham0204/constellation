@@ -76,6 +76,10 @@ kotlin {
             implementation(libs.navigation.compose)
             implementation("io.insert-koin:koin-compose-viewmodel:4.1.0")
             implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.9.0")
+            implementation("io.github.vinceglb:filekit-core:0.12.0")
+            implementation("io.github.vinceglb:filekit-dialogs:0.12.0")
+            implementation("io.github.vinceglb:filekit-dialogs-compose:0.12.0")
+            implementation("io.github.vinceglb:filekit-coil:0.12.0")
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

@@ -1,7 +1,6 @@
 package io.shubham0204.model2vec.data
 
 import androidx.room.Dao
-import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
@@ -22,8 +21,8 @@ interface ThoughtDao {
     @Update
     suspend fun update(thought: Thought)
 
-    @Delete
-    suspend fun delete(thought: Thought)
+    @Query("DELETE FROM Thoughts WHERE id = :thoughtId")
+    suspend fun deleteById(thoughtId: Long)
 
     @Query("SELECT * FROM Thoughts WHERE id = :id")
     suspend fun getById(id: Long): Thought
