@@ -21,6 +21,8 @@ import androidx.compose.material3.FabPosition
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -33,6 +35,7 @@ import androidx.compose.ui.unit.dp
 import compose.icons.FeatherIcons
 import compose.icons.feathericons.BookOpen
 import compose.icons.feathericons.Plus
+import compose.icons.feathericons.Search
 import io.shubham0204.model2vec.data.Thought
 import io.shubham0204.model2vec.preview.dummyThoughts
 import kotlinx.datetime.DateTimeUnit
@@ -45,9 +48,13 @@ import kotlin.time.Clock
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ThoughtsScreen(uiState: ThoughtsScreenUiState, onAddThoughtClick: () -> Unit, onThoughtClick: (Long) -> Unit) {
+fun ThoughtsScreen(
+    uiState: ThoughtsScreenUiState,
+    onAddThoughtClick: () -> Unit,
+    onThoughtClick: (Long) -> Unit,
+    onEvent: (ThoughtsScreenUiEvent) -> Unit
+) {
     MaterialTheme {
-        // Gradient background
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -98,6 +105,29 @@ fun ThoughtsScreen(uiState: ThoughtsScreenUiState, onAddThoughtClick: () -> Unit
                         .padding(paddingValues)
                         .padding(horizontal = 8.dp, vertical = 8.dp)
                 ) {
+                    OutlinedTextField(
+                        value = uiState.searchQuery,
+                        onValueChange = { onEvent(ThoughtsScreenUiEvent.OnSearchQueryChange(it)) },
+                        placeholder = { Text("Search thoughts...") },
+                        leadingIcon = {
+                            Icon(
+                                FeatherIcons.Search,
+                                contentDescription = "Search",
+                                tint = Color(0xFF7C4DFF)
+                            )
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = 12.dp),
+                        shape = RoundedCornerShape(12.dp),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = Color(0xFF7C4DFF),
+                            unfocusedBorderColor = Color(0xFFBBBBBB),
+                            focusedContainerColor = Color.White,
+                            unfocusedContainerColor = Color.White
+                        ),
+                        singleLine = true
+                    )
                     ThoughtsList(thoughts = uiState.thoughts, onThoughtClick)
                 }
             }
@@ -188,6 +218,7 @@ private fun PreviewThoughtsScreen() {
     ThoughtsScreen(
         uiState = ThoughtsScreenUiState(thoughts = dummyThoughts),
         onAddThoughtClick = {},
-        onThoughtClick = {}
+        onThoughtClick = {},
+        onEvent = {}
     )
 }

@@ -13,6 +13,9 @@ interface ThoughtDao {
     @Insert
     suspend fun insert(thought: Thought)
 
+    @Insert
+    suspend fun insertAll(thoughts: List<Thought>)
+
     @Upsert
     suspend fun upsert(thought: Thought)
 
@@ -30,4 +33,7 @@ interface ThoughtDao {
 
     @Query("SELECT * FROM thoughts")
     suspend fun getAll(): List<Thought>
+
+    @Query("SELECT COUNT(*) FROM thoughts")
+    suspend fun getCount(): Int
 }

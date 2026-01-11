@@ -44,6 +44,7 @@ fun App() {
                     onThoughtClick = { thoughtId ->
                         navController.navigate(AddEditThoughtScreenDestination(thoughtId))
                     },
+                    onEvent = viewModel::onEvent
                 )
             }
             composable<AddEditThoughtScreenDestination> { backStackEntry ->

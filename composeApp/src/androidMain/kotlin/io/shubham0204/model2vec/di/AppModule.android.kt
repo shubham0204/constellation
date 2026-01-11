@@ -24,5 +24,5 @@ actual val targetModule: Module = module {
             model2Vec = get()
         )
     }
-    viewModel<ThoughtsScreenViewModel> { ThoughtsScreenViewModel(db = get()) }
+    viewModel<ThoughtsScreenViewModel> { ThoughtsScreenViewModel(db = get(), model2vec = get()) }
 }

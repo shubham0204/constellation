@@ -2,7 +2,43 @@
 
 Constellation is an app that lets you journal your thoughts and revisit older entries that you find similar.
 
+## Architecture
+
+![](./static/native-arch.png)
+
+## Tools
+
+| Tool                                                                               | Use                                                                       |
+|------------------------------------------------------------------------------------|---------------------------------------------------------------------------|
+| [Compose Multiplatform](https://www.jetbrains.com/compose-multiplatform/)          | Shared UI across the Android and iOS apps                                 |
+| [AndroidX ViewModel](https://developer.android.com/kotlin/multiplatform/viewmodel) | Manage UI states and events, interacting with DB and `model2vec`          |
+| [AndroidX Room](https://developer.android.com/kotlin/multiplatform/room)           | SQLite-based ORM for persisting thoughts and embeddings                   |
+| [Kotlin/Native](https://kotlinlang.org/docs/native-c-interop.html)                 | Interop with the native Rust library `model2vec`                          |
+| [Koin](https://insert-koin.io/docs/quickstart/kmp)                                 | Dependency Injection for KMP                                              |
+| The Rust toolchain with crates `safetensors` and `tokenizers`                      | Building the native library to tokenize given text and produce embeddings |
+
 ## Setup
+
+### Building the KMP App
+
+#### Build and Run Android Application
+
+To build and run the development version of the Android app, use the run configuration from the run widget
+in your IDE’s toolbar or build it directly from the terminal:
+
+- on macOS/Linux
+  ```shell
+  ./gradlew :composeApp:assembleDebug
+  ```
+- on Windows
+  ```shell
+  .\gradlew.bat :composeApp:assembleDebug
+  ```
+
+#### Build and Run iOS Application
+
+To build and run the development version of the iOS app, use the run configuration from the run widget
+in your IDE’s toolbar or open the [/iosApp](./iosApp) directory in Xcode and run it from there.
 
 ### Building the Native Library
 
@@ -37,21 +73,21 @@ linker = "<android-ndk-dir>/toolchains/llvm/prebuilt/darwin-x86_64/bin/i686-linu
 linker = "<android-ndk-dir>/toolchains/llvm/prebuilt/darwin-x86_64/bin/x86_64-linux-android33-clang"
 
 [env]
-AR_aarch64-linux-android="<android-ndk-dir>/toolchains/llvm/prebuilt/darwin-x86_64/bin/llvm-ar"
-CC_aarch64-linux-android="<android-ndk-dir>/toolchains/llvm/prebuilt/darwin-x86_64/bin/aarch64-linux-android33-clang"
-CXX_aarch64-linux-android="<android-ndk-dir>/toolchains/llvm/prebuilt/darwin-x86_64/bin/aarch64-linux-android33-clang++"
+AR_aarch64-linux-android = "<android-ndk-dir>/toolchains/llvm/prebuilt/darwin-x86_64/bin/llvm-ar"
+CC_aarch64-linux-android = "<android-ndk-dir>/toolchains/llvm/prebuilt/darwin-x86_64/bin/aarch64-linux-android33-clang"
+CXX_aarch64-linux-android = "<android-ndk-dir>/toolchains/llvm/prebuilt/darwin-x86_64/bin/aarch64-linux-android33-clang++"
 
-AR_armv7-linux-androideabi="<android-ndk-dir>/toolchains/llvm/prebuilt/darwin-x86_64/bin/llvm-ar"
-CC_armv7-linux-androideabi="<android-ndk-dir>/toolchains/llvm/prebuilt/darwin-x86_64/bin/armv7a-linux-androideabi33-clang"
-CXX_armv7-linux-androideabi="<android-ndk-dir>/toolchains/llvm/prebuilt/darwin-x86_64/bin/armv7a-linux-androideabi33-clang++"
+AR_armv7-linux-androideabi = "<android-ndk-dir>/toolchains/llvm/prebuilt/darwin-x86_64/bin/llvm-ar"
+CC_armv7-linux-androideabi = "<android-ndk-dir>/toolchains/llvm/prebuilt/darwin-x86_64/bin/armv7a-linux-androideabi33-clang"
+CXX_armv7-linux-androideabi = "<android-ndk-dir>/toolchains/llvm/prebuilt/darwin-x86_64/bin/armv7a-linux-androideabi33-clang++"
 
-AR_i686-linux-android="<android-ndk-dir>/toolchains/llvm/prebuilt/darwin-x86_64/bin/llvm-ar"
-CC_i686-linux-android="<android-ndk-dir>/toolchains/llvm/prebuilt/darwin-x86_64/bin/i686-linux-android33-clang"
-CXX_i686-linux-android="<android-ndk-dir>/toolchains/llvm/prebuilt/darwin-x86_64/bin/i686-linux-android33-clang++"
+AR_i686-linux-android = "<android-ndk-dir>/toolchains/llvm/prebuilt/darwin-x86_64/bin/llvm-ar"
+CC_i686-linux-android = "<android-ndk-dir>/toolchains/llvm/prebuilt/darwin-x86_64/bin/i686-linux-android33-clang"
+CXX_i686-linux-android = "<android-ndk-dir>/toolchains/llvm/prebuilt/darwin-x86_64/bin/i686-linux-android33-clang++"
 
-AR_x86_64-linux-android="<android-ndk-dir>/toolchains/llvm/prebuilt/darwin-x86_64/bin/llvm-ar"
-CC_x86_64-linux-android="<android-ndk-dir>/toolchains/llvm/prebuilt/darwin-x86_64/bin/x86_64-linux-android33-clang"
-CXX_x86_64-linux-android="<android-ndk-dir>/toolchains/llvm/prebuilt/darwin-x86_64/bin/x86_64-linux-android33-clang++"
+AR_x86_64-linux-android = "<android-ndk-dir>/toolchains/llvm/prebuilt/darwin-x86_64/bin/llvm-ar"
+CC_x86_64-linux-android = "<android-ndk-dir>/toolchains/llvm/prebuilt/darwin-x86_64/bin/x86_64-linux-android33-clang"
+CXX_x86_64-linux-android = "<android-ndk-dir>/toolchains/llvm/prebuilt/darwin-x86_64/bin/x86_64-linux-android33-clang++"
 ```
 
 Next, execute the following to compile and copy the native library files to the respective KMP target directories.
@@ -68,39 +104,30 @@ make build-ios     # build libs for iOS
 cargo test
 ```
 
-This is a Kotlin Multiplatform project targeting Android, iOS.
+## Challenges
 
-* [/composeApp](./composeApp/src) is for code that will be shared across your Compose Multiplatform applications.
-  It contains several subfolders:
-    - [commonMain](./composeApp/src/commonMain/kotlin) is for code that’s common for all targets.
-    - Other folders are for Kotlin code that will be compiled for only the platform indicated in the folder name.
-      For example, if you want to use Apple’s CoreCrypto for the iOS part of your Kotlin app,
-      the [iosMain](./composeApp/src/iosMain/kotlin) folder would be the right place for such calls.
-      Similarly, if you want to edit the Desktop (JVM) specific part, the [jvmMain](./composeApp/src/jvmMain/kotlin)
-      folder is the appropriate location.
+### Compose Resources packages raw files in the `assets` directory in Android
 
-* [/iosApp](./iosApp/iosApp) contains iOS applications. Even if you’re sharing your UI with Compose Multiplatform,
-  you need this entry point for your iOS app. This is also where you should add SwiftUI code for your project.
+Currently, with Compose Resources, the files present in `commonMain/resources/files` directory are packaged in the
+`assets` directory of the Android app (target `androidMain`). The native library `model2vec` expects paths to the model
+and tokenizer files
 
-### Build and Run Android Application
+## Contributing
 
-To build and run the development version of the Android app, use the run configuration from the run widget
-in your IDE’s toolbar or build it directly from the terminal:
+## License
 
-- on macOS/Linux
-  ```shell
-  ./gradlew :composeApp:assembleDebug
-  ```
-- on Windows
-  ```shell
-  .\gradlew.bat :composeApp:assembleDebug
-  ```
+```text
+Copyright 2026 Shubham Panchal
 
-### Build and Run iOS Application
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
 
-To build and run the development version of the iOS app, use the run configuration from the run widget
-in your IDE’s toolbar or open the [/iosApp](./iosApp) directory in Xcode and run it from there.
+    http://www.apache.org/licenses/LICENSE-2.0
 
----
-
-Learn more about [Kotlin Multiplatform](https://www.jetbrains.com/help/kotlin-multiplatform-dev/get-started.html)
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+```
