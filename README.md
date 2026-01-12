@@ -6,6 +6,8 @@ Constellation is an app that lets you journal your thoughts and revisit older en
 |----------------------------------------|-------------------------------------------------------|------------------------------------------------------|-------------------------------------|
 | Thoughts are colored as per their tone | View similar thoughts when creating/editing a thought | View details of a thought including similar thoughts | Export/Import thoughts as JSON file |
 
+https://github.com/user-attachments/assets/64e53816-9cd3-4891-b318-6cb4e057ef45
+
 ## Features
 
 - Add/Edit/Update Thoughts
@@ -33,7 +35,23 @@ Constellation is an app that lets you journal your thoughts and revisit older en
 
 ### Building the KMP App
 
+Clone the project:
+
+```bash
+git clone --depth=1 https://github.com/shubham0204/constellation
+```
+
+Pre-requisites:
+
+- macOS 26.2 and Xcode 26.2
+- JDK 21 (Temurin)
+- IntelliJ IDEA 2025.3 with KMP plugin
+
 #### Build and Run Android Application
+
+Executing from IntelliJ IDEA:
+
+![](static/ss-6.png)
 
 To build and run the development version of the Android app, use the run configuration from the run widget
 in your IDE’s toolbar or build it directly from the terminal:
@@ -48,6 +66,10 @@ in your IDE’s toolbar or build it directly from the terminal:
   ```
 
 #### Build and Run iOS Application
+
+Executing from IntelliJ IDEA:
+
+![](static/ss-5.png)
 
 To build and run the development version of the iOS app, use the run configuration from the run widget
 in your IDE’s toolbar or open the [/iosApp](./iosApp) directory in Xcode and run it from there.
@@ -108,12 +130,6 @@ Next, execute the following to compile and copy the native library files to the 
 cd model2vec-rs
 make build-android # build libs for Android
 make build-ios     # build libs for iOS
-```
-
-#### Running Unit Tests
-
-```bash
-cargo test
 ```
 
 ## Challenges
