@@ -2,6 +2,7 @@ package io.shubham0204.model2vec.data
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import io.shubham0204.model2vec.ml.Sentiment
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.format
@@ -18,7 +19,8 @@ data class Thought(
     val title: String,
     val content: String,
     val dateModifiedTimestamp: Long,
-    val embedding: FloatArray = floatArrayOf()
+    val embedding: FloatArray = floatArrayOf(),
+    val sentiment: Sentiment = Sentiment.NEUTRAL
 ) {
 
     @OptIn(FormatStringsInDatetimeFormats::class)

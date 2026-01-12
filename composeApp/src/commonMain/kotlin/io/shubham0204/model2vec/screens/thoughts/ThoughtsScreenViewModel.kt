@@ -8,9 +8,10 @@ import io.github.vinceglb.filekit.dialogs.openFilePicker
 import io.github.vinceglb.filekit.dialogs.openFileSaver
 import io.github.vinceglb.filekit.readString
 import io.github.vinceglb.filekit.writeString
-import io.shubham0204.model2vec.Model2Vec
 import io.shubham0204.model2vec.data.AppDatabase
 import io.shubham0204.model2vec.data.Thought
+import io.shubham0204.model2vec.ml.Model2Vec
+import io.shubham0204.model2vec.ml.SentimentAnalyzer
 import io.shubham0204.model2vec.preview.dummyThoughts
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
@@ -33,7 +34,8 @@ sealed interface ThoughtsScreenUiEvent {
 
 class ThoughtsScreenViewModel(
     private val db: AppDatabase,
-    private val model2vec: Model2Vec
+    private val model2vec: Model2Vec,
+    private val sentimentAnalyzer: SentimentAnalyzer
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ThoughtsScreenUiState())
@@ -47,7 +49,10 @@ class ThoughtsScreenViewModel(
                 val embeddings = model2vec.encode(dummyThoughts.map { it.content })
                 db.getThoughtDao()
                     .insertAll(dummyThoughts.zip(embeddings).map { (thought, embedding) ->
-                        thought.copy(embedding = embedding)
+                        thought.copy(
+                            embedding = embedding,
+                            sentiment = sentimentAnalyzer.getSentimentScore(thought.content)
+                        )
                     })
             }
             db.getThoughtDao().getAllAsFlow().collect { thoughts ->
@@ -102,7 +107,7 @@ class ThoughtsScreenViewModel(
             val textMatches = allThoughts.filter { thought ->
                 thought.title.contains(query, ignoreCase = true) ||
                         thought.content.contains(query, ignoreCase = true)
-            }.map { it.id to 1.0f }.toMap()
+            }.associate { it.id to 1.0f }
 
             // Semantic search using embeddings
             val queryEmbedding = model2vec.encode(listOf(query)).firstOrNull()

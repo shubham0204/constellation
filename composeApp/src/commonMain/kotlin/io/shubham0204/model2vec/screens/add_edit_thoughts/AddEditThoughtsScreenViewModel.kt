@@ -2,9 +2,9 @@ package io.shubham0204.model2vec.screens.add_edit_thoughts
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import io.shubham0204.model2vec.Model2Vec
 import io.shubham0204.model2vec.data.AppDatabase
 import io.shubham0204.model2vec.data.Thought
+import io.shubham0204.model2vec.ml.Model2Vec
 import io.shubham0204.model2vec.services.SimilarThoughtsService
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

@@ -1,10 +1,11 @@
 build-ios:
 	$(info Building for iOS... This may take a while)
+	@export IPHONEOS_DEPLOYMENT_TARGET=10.0
 	@cargo build --release --target aarch64-apple-ios
 	@cargo build --release --target aarch64-apple-ios-sim
 
-	@cp target/aarch64-apple-ios/release/libmodel2vec.a ../library/src/iosMain/resources/libs/ios-arm64/libmodel2vec.a
-	@cp target/aarch64-apple-ios-sim/release/libmodel2vec.a ../library/src/iosMain/resources/libs/ios-arm64-simulator/libmodel2vec.a
+	@cp target/aarch64-apple-ios/release/libmodel2vec.a ../composeApp/src/iosMain/resources/libs/ios-arm64/libmodel2vec.a
+	@cp target/aarch64-apple-ios-sim/release/libmodel2vec.a ../composeApp/src/iosMain/resources/libs/ios-arm64-simulator/libmodel2vec.a
 
 build-android:
 	$(info Building for Android... This may take a while)

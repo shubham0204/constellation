@@ -54,6 +54,8 @@ kotlin {
 
             implementation(libs.koin.android)
             implementation(libs.koin.androidx.compose)
+
+            implementation("org.tensorflow:tensorflow-lite-task-text:0.4.4")
         }
         commonMain.dependencies {
             implementation(compose.runtime)

@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "5f82c8791294a8ccf0baff51de39ebd6",
+    "identityHash": "396113a4ae067fc4d71ac483378ee026",
     "entities": [
       {
         "tableName": "thoughts",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `title` TEXT NOT NULL, `content` TEXT NOT NULL, `dateModifiedTimestamp` INTEGER NOT NULL, `embedding` BLOB NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `title` TEXT NOT NULL, `content` TEXT NOT NULL, `dateModifiedTimestamp` INTEGER NOT NULL, `embedding` BLOB NOT NULL, `sentiment` TEXT NOT NULL)",
         "fields": [
           {
             "fieldPath": "id",
@@ -37,6 +37,12 @@
             "columnName": "embedding",
             "affinity": "BLOB",
             "notNull": true
+          },
+          {
+            "fieldPath": "sentiment",
+            "columnName": "sentiment",
+            "affinity": "TEXT",
+            "notNull": true
           }
         ],
         "primaryKey": {
@@ -49,7 +55,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '5f82c8791294a8ccf0baff51de39ebd6')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '396113a4ae067fc4d71ac483378ee026')"
     ]
   }
 }

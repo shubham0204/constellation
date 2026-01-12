@@ -44,6 +44,7 @@ import compose.icons.feathericons.MoreVertical
 import compose.icons.feathericons.Plus
 import compose.icons.feathericons.Search
 import io.shubham0204.model2vec.data.Thought
+import io.shubham0204.model2vec.ml.Sentiment
 import io.shubham0204.model2vec.preview.dummyThoughts
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.TimeZone
@@ -233,19 +234,33 @@ private fun ThoughtsListItem(thought: Thought, onThoughtClick: (Long) -> Unit) {
             .padding(vertical = 2.dp, horizontal = 8.dp),
         shape = RoundedCornerShape(16.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White)
+        colors = CardDefaults.cardColors(
+            containerColor = when (thought.sentiment) {
+                Sentiment.NEUTRAL -> Color(0xFFE3F2FD)    // Light blue
+                Sentiment.POSITIVE -> Color(0xFF90CAF9)   // Medium blue
+                Sentiment.NEGATIVE -> Color(0xFFBBDEFB)   // Soft blue
+            }
+        )
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Text(
                 text = thought.title,
                 style = MaterialTheme.typography.titleMedium,
-                color = Color(0xFF7C4DFF)
+                color = if (thought.sentiment == Sentiment.POSITIVE) {
+                    Color.White
+                } else {
+                    Color(0xFF7C4DFF)
+                }
             )
             Spacer(modifier = Modifier.height(6.dp))
             Text(
                 text = thought.content,
                 style = MaterialTheme.typography.bodyLarge,
-                color = Color(0xFF333333)
+                color = if (thought.sentiment == Sentiment.POSITIVE) {
+                    Color.White
+                } else {
+                    Color(0xFF333333)
+                }
             )
         }
     }
@@ -255,7 +270,17 @@ private fun ThoughtsListItem(thought: Thought, onThoughtClick: (Long) -> Unit) {
 @Composable
 private fun PreviewThoughtsScreen() {
     ThoughtsScreen(
-        uiState = ThoughtsScreenUiState(thoughts = dummyThoughts),
+        uiState = ThoughtsScreenUiState(thoughts = dummyThoughts.mapIndexed { index, thought ->
+            thought.copy(
+                sentiment = if (index % 3 == 0) {
+                    Sentiment.NEGATIVE
+                } else if (index % 3 == 1) {
+                    Sentiment.POSITIVE
+                } else {
+                    Sentiment.NEUTRAL
+                }
+            )
+        }),
         onAddThoughtClick = {},
         onThoughtClick = {},
         onEvent = {}

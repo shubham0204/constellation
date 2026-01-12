@@ -1,6 +1,6 @@
 package io.shubham0204.model2vec.services
 
-import io.shubham0204.model2vec.Model2Vec
+import io.shubham0204.model2vec.ml.Model2Vec
 import kotlin.math.sqrt
 
 class SimilarThoughtsService(
