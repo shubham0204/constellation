@@ -25,7 +25,7 @@ actual class Model2Vec(
     init {
         memScoped {
             val modelFile = fileUtils.getReadableFileFromResFileUri(
-                Res.getUri("files/model.safetensors")
+                Res.getUri("files/embeddings.safetensors")
             )
             val tokenizerFile = fileUtils.getReadableFileFromResFileUri(Res.getUri("files/tokenizer.json"))
             handle =

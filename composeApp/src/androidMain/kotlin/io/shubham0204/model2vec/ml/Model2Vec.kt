@@ -17,7 +17,7 @@ actual class Model2Vec(
 
     init {
         val modelFile = fileUtils.getReadableFileFromResFileUri(
-            Res.getUri("files/model.safetensors")
+            Res.getUri("files/embeddings.safetensors")
         )
         val tokenizerFile = fileUtils.getReadableFileFromResFileUri(Res.getUri("files/tokenizer.json"))
         this.handle = create(modelFile, tokenizerFile, numThreads)
