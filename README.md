@@ -14,7 +14,7 @@ Constellation is an app that lets you journal your thoughts and revisit older en
 
 ## Architecture
 
-![](./static/native-arch.png)
+![architecture](./static/native-arch.png)
 
 ## Tools
 
@@ -27,6 +27,7 @@ Constellation is an app that lets you journal your thoughts and revisit older en
 | [Koin](https://insert-koin.io/docs/quickstart/kmp)                                                                                                                                                                      | Dependency Injection for KMP                                              |
 | [NaturalLangauge](https://developer.apple.com/documentation/NaturalLanguage) library and [LiteRT's NLBertClassifier](https://ai.google.dev/edge/litert/libraries/task_library/bert_nl_classifier#run_inference_in_java) | Sentiment analysis for Android and iOS                                    |
 | The Rust toolchain with crates `safetensors` and `tokenizers`                                                                                                                                                           | Building the native library to tokenize given text and produce embeddings |
+| [FileKit](https://github.com/vinceglb/FileKit)                                                                                                                                                                          | KMP library for loading/saving files                                      | 
 
 ## Setup
 

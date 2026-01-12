@@ -85,7 +85,7 @@ fun ThoughtsScreen(
                                     modifier = Modifier.padding(end = 8.dp)
                                 )
                                 Column {
-                                    Text("Thoughts", style = MaterialTheme.typography.titleLarge)
+                                    Text("Constellation", style = MaterialTheme.typography.titleLarge)
                                     Text(
                                         "Your daily reflections",
                                         style = MaterialTheme.typography.bodySmall,
