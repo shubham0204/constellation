@@ -53,6 +53,7 @@ fun AddEditThoughtsScreen(
         uiState.thought?.let { thought ->
             title = thought.title
             content = thought.content
+            onEvent(AddEditThoughtsScreenEvent.LoadSimilarThoughts(thought.content))
         }
     }
     MaterialTheme {
@@ -205,7 +206,7 @@ fun AddEditThoughtsScreen(
                                 LazyColumn(
                                     verticalArrangement = Arrangement.spacedBy(8.dp)
                                 ) {
-                                    items(uiState.similarThoughts) { thought ->
+                                    items(uiState.similarThoughts.filter { it.id != uiState.thought?.id }) { thought ->
                                         Card(
                                             shape = RoundedCornerShape(12.dp),
                                             elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
