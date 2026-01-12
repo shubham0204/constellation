@@ -1,4 +1,4 @@
-rootProject.name = "model2vec"
+rootProject.name = "constellation"
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 pluginManagement {

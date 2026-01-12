@@ -1,7 +1,7 @@
 package io.shubham0204.model2vec.ml
 
+import constellation.composeapp.generated.resources.Res
 import io.shubham0204.model2vec.FileUtils
-import model2vec.composeapp.generated.resources.Res
 
 actual class Model2Vec(
     fileUtils: FileUtils

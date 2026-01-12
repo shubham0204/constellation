@@ -2,6 +2,7 @@
 
 package io.shubham0204.model2vec.ml
 
+import constellation.composeapp.generated.resources.Res
 import io.shubham0204.model2vec.FileUtils
 import io.shubham0204.model2vec.native.model2vec_add_seq_buffer
 import io.shubham0204.model2vec.native.model2vec_clear_seq_buffer
@@ -13,7 +14,6 @@ import kotlinx.cinterop.get
 import kotlinx.cinterop.memScoped
 import kotlinx.cinterop.toCPointer
 import kotlinx.cinterop.useContents
-import model2vec.composeapp.generated.resources.Res
 
 actual class Model2Vec(
     private val fileUtils: FileUtils
