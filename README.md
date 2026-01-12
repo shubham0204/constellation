@@ -2,20 +2,31 @@
 
 Constellation is an app that lets you journal your thoughts and revisit older entries that you find similar.
 
+| ![](static/ss-1.png)                   | ![](static/ss-2.png)                                  | ![](static/ss-3.png)                                 | ![](static/ss-4.png)                |
+|----------------------------------------|-------------------------------------------------------|------------------------------------------------------|-------------------------------------|
+| Thoughts are colored as per their tone | View similar thoughts when creating/editing a thought | View details of a thought including similar thoughts | Export/Import thoughts as JSON file |
+
+## Features
+
+- Add/Edit/Update Thoughts
+- Check semantically similar thoughts when creating/editing a thought
+- Export/Import thoughts as a JSON file
+
 ## Architecture
 
 ![](./static/native-arch.png)
 
 ## Tools
 
-| Tool                                                                               | Use                                                                       |
-|------------------------------------------------------------------------------------|---------------------------------------------------------------------------|
-| [Compose Multiplatform](https://www.jetbrains.com/compose-multiplatform/)          | Shared UI across the Android and iOS apps                                 |
-| [AndroidX ViewModel](https://developer.android.com/kotlin/multiplatform/viewmodel) | Manage UI states and events, interacting with DB and `model2vec`          |
-| [AndroidX Room](https://developer.android.com/kotlin/multiplatform/room)           | SQLite-based ORM for persisting thoughts and embeddings                   |
-| [Kotlin/Native](https://kotlinlang.org/docs/native-c-interop.html)                 | Interop with the native Rust library `model2vec`                          |
-| [Koin](https://insert-koin.io/docs/quickstart/kmp)                                 | Dependency Injection for KMP                                              |
-| The Rust toolchain with crates `safetensors` and `tokenizers`                      | Building the native library to tokenize given text and produce embeddings |
+| Tool                                                                                                                                                                                                                    | Use                                                                       |
+|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------|
+| [Compose Multiplatform](https://www.jetbrains.com/compose-multiplatform/)                                                                                                                                               | Shared UI across the Android and iOS apps                                 |
+| [AndroidX ViewModel](https://developer.android.com/kotlin/multiplatform/viewmodel)                                                                                                                                      | Manage UI states and events, interacting with DB and `model2vec`          |
+| [AndroidX Room](https://developer.android.com/kotlin/multiplatform/room)                                                                                                                                                | SQLite-based ORM for persisting thoughts and embeddings                   |
+| [Kotlin/Native](https://kotlinlang.org/docs/native-c-interop.html)                                                                                                                                                      | Interop with the native Rust library `model2vec`                          |
+| [Koin](https://insert-koin.io/docs/quickstart/kmp)                                                                                                                                                                      | Dependency Injection for KMP                                              |
+| [NaturalLangauge](https://developer.apple.com/documentation/NaturalLanguage) library and [LiteRT's NLBertClassifier](https://ai.google.dev/edge/litert/libraries/task_library/bert_nl_classifier#run_inference_in_java) | Sentiment analysis for Android and iOS                                    |
+| The Rust toolchain with crates `safetensors` and `tokenizers`                                                                                                                                                           | Building the native library to tokenize given text and produce embeddings |
 
 ## Setup
 
@@ -108,9 +119,27 @@ cargo test
 
 ### Compose Resources packages raw files in the `assets` directory in Android
 
-Currently, with Compose Resources, the files present in `commonMain/resources/files` directory are packaged in the
-`assets` directory of the Android app (target `androidMain`). The native library `model2vec` expects paths to the model
-and tokenizer files
+* **Problem**: Currently, with Compose Resources, the files present in `commonMain/resources/files` directory are
+  packaged in the
+  `assets` directory of the Android app (target `androidMain`). The native library `model2vec` expects paths to the
+  model
+  and tokenizer files to be readable and uncompressed. On iOS, Compose Resources are packaged as raw files within the
+  bundle of the app, which is accessible by native libraries. On Android, the resources are packaged in the `assets`
+  folder, a raw path to which is not accessible to external libraries.
+
+* **Solution**: Write custom logic that copies files from the `assets` folder into the internal storage of the app (
+  `context.filesDir`) for Android. The path to the copied file in the internal storage is accessible to native
+  libraries. This logic is observed in `FileUtils.android.kt` in the `androidMain` module.
+
+### `TensorFlowLiteTaskText` does not support `ios-simulator` target
+
+* **Problem**: I wanted to integrate a sentiment analyzer in the app. LiteRT's [NLBertClassifier]() API is supported
+  both on Android and iOS. After adding the iOS library i.e. the Pod `TensorFlowLiteTaskText` to the common module as a
+  CocoaPods dependency,
+
+* **Solution**: Instead of relying on the same `NLBertClassifier` API from LiteRT, I used two different NLP solutions
+  for Android and iOS. For Android, the `NLBertClassifier` API is used and for iOS, there is a builtin `NaturalLanguage`
+  package that provides `NLTagger` to predict the sentiment of the given text.
 
 ## Contributing
 
