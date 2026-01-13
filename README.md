@@ -1,6 +1,7 @@
 # Constellation - Journal and Revisit Your Thoughts
 
-Constellation is an app that lets you journal your thoughts and revisit older entries that you find similar.
+Constellation is an app that lets you journal your thoughts and revisit older entries that you find similar with
+on-device ML.
 
 | ![](static/ss-1.png)                   | ![](static/ss-2.png)                                  | ![](static/ss-3.png)                                 | ![](static/ss-4.png)                |
 |----------------------------------------|-------------------------------------------------------|------------------------------------------------------|-------------------------------------|
@@ -11,8 +12,9 @@ https://github.com/user-attachments/assets/64e53816-9cd3-4891-b318-6cb4e057ef45
 ## Features
 
 - Add/Edit/Update Thoughts
-- Check semantically similar thoughts when creating/editing a thought
+- Check semantically similar thoughts when creating/editing a thought (via a local embedding model)
 - Export/Import thoughts as a JSON file
+- Thoughts are color-coded based on their sentiment (platform-specific sentiment analysis)
 
 ## Architecture
 
@@ -150,15 +152,14 @@ make build-ios     # build libs for iOS
 
 ### `TensorFlowLiteTaskText` does not support `ios-simulator` target
 
-* **Problem**: I wanted to integrate a sentiment analyzer in the app. LiteRT's [NLBertClassifier]() API is supported
+* **Problem**: I wanted to integrate a sentiment analyzer in the app. LiteRT's [BertNLClassifier]() API is supported
   both on Android and iOS. After adding the iOS library i.e. the Pod `TensorFlowLiteTaskText` to the common module as a
-  CocoaPods dependency,
+  CocoaPods dependency, running the app on the iOS simulator failed, with the error message suggesting that the Pod
+  `TensorFlowLiteTaskText` contains code compiled for `iOS` but execution was attempted on `iOS-simulator`.
 
-* **Solution**: Instead of relying on the same `NLBertClassifier` API from LiteRT, I used two different NLP solutions
-  for Android and iOS. For Android, the `NLBertClassifier` API is used and for iOS, there is a builtin `NaturalLanguage`
+* **Solution**: Instead of relying on the same `BertNLClassifier` API from LiteRT, I used two different NLP solutions
+  for Android and iOS. For Android, the `BertNLClassifier` API is used and for iOS, there is a builtin `NaturalLanguage`
   package that provides `NLTagger` to predict the sentiment of the given text.
-
-## Contributing
 
 ## License
 
